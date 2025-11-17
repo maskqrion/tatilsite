@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rota Önerin | Seçkin Rotalar</title>
+    <meta name="description" content="Yeni bir tatil rotası mı keşfettiniz? Seçkin Rotalar ailesiyle paylaşın.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .notification {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        .notification.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .notification.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div id="progress-bar"></div>
+    <a href="#main-content" class="skip-link">Ana İçeriğe Atla</a>
+
+<header class="site-header" id="header">
+    <div class="container header-container">
+        <a href="index.html" class="logo">Seçkin Rotalar</a>
+<nav class="main-nav" id="mainNav">
+    <div class="nav-trigger-wrapper">
+        <div id="user-session" class="user-session">
+            </div>
+    </div>
+
+    <div class="nav-collapsible-container">
+        <a href="index.html">Ana Sayfa</a>
+        <a href="rotalar.html">Rotalar</a>
+        <a href="hakkinda.html">Hakkında</a>
+        <a href="iletisim.html">İletişim</a>
+        <a href="blog.html">Blog</a>
+        <a href="etkinlikler.html">Etkinlikler</a>
+        <a href="rota-oner.html">Rota Öner</a>
+        <div class="menu-separator"></div>
+        <a href="arama.html" title="Site içi arama">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            Site İçi Arama
+        </a>
+        <button class="theme-switch" id="theme-switch" aria-label="Toggle dark mode">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            Tema Değiştir
+        </button>
+    </div>
+</nav>
+        <button class="nav-toggle" id="navToggle" aria-label="Menüyü aç/kapat">
+            <span class="hamburger"></span>
+        </button>
+    </div>
+</header>
+    <div class="nav-overlay" id="navOverlay"></div>
+    
+    <main id="main-content">
+        <div class="container content-area">
+            <header class="belde-baslik-alani">
+                <h1 class="belde-baslik fade-in">Rota Önerin</h1>
+                <p class="belde-aciklama fade-in">Yeni keşfettiğiniz veya sitede olmasını istediğiniz bir rotayı bizimle paylaşın.</p>
+            </header>
+            
+            <div id="notification" class="notification"></div>
+            
+            <form class="contact-form fade-in" id="suggestionForm" action="rota-oner-kaydet.php" method="POST">
+                <div class="form-group">
+                    <input type="text" id="onerilen_rota" name="onerilen_rota" required placeholder=" ">
+                    <label for="onerilen_rota">Önerdiğiniz Rota Adı</label>
+                </div>
+                
+                <div class="form-group">
+                    <select id="bolge" name="bolge" class="filter-select">
+                        <option value="">Bölge Seçin</option>
+                        <option value="ege">Ege</option>
+                        <option value="akdeniz">Akdeniz</option>
+                        <option value="marmara">Marmara</option>
+                        <option value="karadeniz">Karadeniz</option>
+                        <option value="ic-anadolu">İç Anadolu</option>
+                        <option value="dogu-anadolu">Doğu Anadolu</option>
+                        <option value="guneydogu-anadolu">Güneydoğu Anadolu</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <textarea id="aciklama" name="aciklama" required minlength="20" placeholder=" "></textarea>
+                    <label for="aciklama">Neden bu rotayı önerdiğinizi açıklayın...</label>
+                </div>
+
+                <input type="hidden" name="csrf_token" id="csrfToken">
+
+                <button type="submit" class="hero-cta">Öneriyi Gönder</button>
+            </form>
+            
+        </div>
+    </main>
+    
+    <footer class="site-footer">
+        <div class="container">
+            <p>Türkiye'nin Seçkin Rotaları &copy; 2025</p>
+        </div>
+    </footer>
+
+    <a href="#" id="scrollTopBtn" class="scroll-top-btn" title="Yukarı Çık">↑</a>
+
+    <script src="main.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const notification = document.getElementById('notification');
+            const form = document.getElementById('suggestionForm');
+            const params = new URLSearchParams(window.location.search);
+            const status = params.get('status');
+
+            try {
+                const csrfTokenResponse = await fetch('check_session.php?get_csrf=true');
+                const csrfData = await csrfTokenResponse.json();
+                if (csrfData.csrf_token) {
+                    document.getElementById('csrfToken').value = csrfData.csrf_token;
+                }
+            } catch (error) {
+                console.error('CSRF token alınamadı:', error);
+            }
+
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const result = await response.json();
+
+                    if (response.ok && result.success) {
+                        notification.textContent = 'Rota öneriniz başarıyla gönderildi. Değerlendirme sürecinden sonra size bilgi verilecektir.';
+                        notification.className = 'notification success';
+                        form.reset();
+                    } else {
+                        notification.textContent = result.message || 'Bir hata oluştu. Lütfen tekrar deneyin.';
+                        notification.className = 'notification error';
+                    }
+                } catch (error) {
+                    notification.textContent = 'Bir ağ hatası oluştu. Lütfen tekrar deneyin.';
+                    notification.className = 'notification error';
+                } finally {
+                    notification.style.display = 'block';
+                    window.scrollTo(0, notification.offsetTop - 100);
+                }
+            });
+
+            if (status === 'success') {
+                notification.textContent = 'Rota öneriniz başarıyla gönderildi. Değerlendirme sürecinden sonra size bilgi verilecektir.';
+                notification.className = 'notification success';
+                notification.style.display = 'block';
+            } else if (status === 'error') {
+                notification.textContent = 'Bir hata oluştu. Lütfen form alanlarını kontrol edip tekrar deneyin.';
+                notification.className = 'notification error';
+                notification.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog | Seçkin Rotalar - Seyahat Rehberi ve İpuçları</title>
+    <meta name="description" content="Türkiye'nin seçkin tatil rotaları hakkında en güncel seyahat rehberleri, ipuçları ve ilham veren yazılar.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="progress-bar"></div>
+    <a href="#main-content" class="skip-link">Ana İçeriğe Atla</a>
+
+<header class="site-header" id="header">
+    <div class="container header-container">
+        <a href="index.html" class="logo">Seçkin Rotalar</a>
+<nav class="main-nav" id="mainNav">
+    <div class="nav-trigger-wrapper">
+        <div id="user-session" class="user-session">
+            </div>
+    </div>
+
+    <div class="nav-collapsible-container">
+        <a href="index.html">Ana Sayfa</a>
+        <a href="rotalar.html">Rotalar</a>
+        <a href="hakkinda.html">Hakkında</a>
+        <a href="iletisim.html">İletişim</a>
+        <a href="blog.html">Blog</a>
+        <a href="etkinlikler.html">Etkinlikler</a>
+        <a href="rota-oner.html">Rota Öner</a>
+        <div class="menu-separator"></div>
+        <a href="arama.html" title="Site içi arama">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            Site İçi Arama
+        </a>
+        <button class="theme-switch" id="theme-switch" aria-label="Toggle dark mode">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            Tema Değiştir
+        </button>
+    </div>
+</nav>
+        <button class="nav-toggle" id="navToggle" aria-label="Menüyü aç/kapat">
+            <span class="hamburger"></span>
+        </button>
+    </div>
+</header>
+    <div class="nav-overlay" id="navOverlay"></div>
+    
+    <main id="main-content">
+        <div class="container content-area">
+            <header class="belde-baslik-alani">
+                <h1 class="belde-baslik fade-in">Seyahat Yazıları</h1>
+                <p class="belde-aciklama fade-in">İlham veren rotalar, lezzet durakları ve seyahat ipuçları.</p>
+            </header>
+
+            <div class="filter-buttons fade-in" style="justify-content: center; margin-bottom: 50px;">
+                <button class="filter-btn active" data-kategori="tumu">Tümü</button>
+                <button class="filter-btn" data-kategori="Rehber">Rehber</button>
+                <button class="filter-btn" data-kategori="İpuçları">İpuçları</button>
+            </div>
+
+            <div class="blog-listesi">
+                </div>
+
+        </div>
+    </main>
+    
+    <footer class="site-footer">
+        <div class="container">
+            <p>Türkiye'nin Seçkin Rotaları &copy; 2025</p>
+        </div>
+    </footer>
+
+    <a href="#" id="scrollTopBtn" class="scroll-top-btn" title="Yukarı Çık">↑</a>
+
+    <script src="main.js" defer></script>
+    <script src="blog.js" defer></script>
+</body>
+</html>

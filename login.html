@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap | Seçkin Rotalar</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .notification {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-weight: 500;
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .notification.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .notification.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+<header class="site-header" id="header">
+    <div class="container header-container">
+        <a href="index.html" class="logo">Seçkin Rotalar</a>
+<nav class="main-nav" id="mainNav">
+    <div class="nav-trigger-wrapper">
+        <div id="user-session" class="user-session">
+            </div>
+    </div>
+
+    <div class="nav-collapsible-container">
+        <a href="index.html">Ana Sayfa</a>
+        <a href="rotalar.html">Rotalar</a>
+        <a href="hakkinda.html">Hakkında</a>
+        <a href="iletisim.html">İletişim</a>
+        <a href="blog.html">Blog</a>
+        <a href="etkinlikler.html">Etkinlikler</a>
+        <a href="rota-oner.html">Rota Öner</a>
+        <div class="menu-separator"></div>
+        <a href="arama.html" title="Site içi arama">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            Site İçi Arama
+        </a>
+        <button class="theme-switch" id="theme-switch" aria-label="Toggle dark mode">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            Tema Değiştir
+        </button>
+    </div>
+</nav>
+        <button class="nav-toggle" id="navToggle" aria-label="Menüyü aç/kapat">
+            <span class="hamburger"></span>
+        </button>
+    </div>
+</header>
+    <main>
+        <div class="container content-area">
+            <section class="auth-section">
+                <h1 class="section-title">Giriş Yap</h1>
+                <div id="notification" class="notification"></div>
+                
+                <form class="contact-form" action="login.php" method="POST">
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" required placeholder=" ">
+                        <label for="email">E-posta Adresiniz</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="password" name="password" required placeholder=" ">
+                        <label for="password">Şifreniz</label>
+                    </div>
+                    <button type="submit" class="hero-cta">Giriş Yap</button>
+                    <p class="auth-switch" style="text-align:center; margin-top:20px;">
+                        <a href="sifremi-unuttum.html">Şifremi unuttum</a> | Hesabınız yok mu? <a href="register.html">Kayıt Olun</a>
+                    </p>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const notification = document.getElementById('notification');
+            const params = new URLSearchParams(window.location.search);
+
+            const successMessage = params.get('success');
+            const errorMessage = params.get('error');
+
+            if (successMessage === 'registration_complete') {
+                notification.textContent = 'Kayıt başarılı! Şimdi giriş yapabilirsiniz.';
+                notification.className = 'notification success';
+                notification.style.display = 'block';
+            }
+
+            if (errorMessage === 'invalid_credentials') {
+                notification.textContent = 'Hatalı e-posta veya şifre. Lütfen tekrar deneyin.';
+                notification.className = 'notification error';
+                notification.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

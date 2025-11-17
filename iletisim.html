@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İletişim | Seçkin Rotalar - Öneri ve İş Birlikleri</title>
+    <meta name="description" content="Önerileriniz, sorularınız veya iş birliği teklifleriniz için Seçkin Rotalar ekibiyle iletişime geçin.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .notification {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-weight: 500;
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .notification.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .notification.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div id="progress-bar"></div>
+    <a href="#main-content" class="skip-link">Ana İçeriğe Atla</a>
+
+<header class="site-header" id="header">
+    <div class="container header-container">
+        <a href="index.html" class="logo">Seçkin Rotalar</a>
+<nav class="main-nav" id="mainNav">
+    <div class="nav-trigger-wrapper">
+        <div id="user-session" class="user-session">
+            </div>
+    </div>
+
+    <div class="nav-collapsible-container">
+        <a href="index.html">Ana Sayfa</a>
+        <a href="rotalar.html">Rotalar</a>
+        <a href="hakkinda.html">Hakkında</a>
+        <a href="iletisim.html">İletişim</a>
+        <a href="blog.html">Blog</a>
+        <a href="etkinlikler.html">Etkinlikler</a>
+        <a href="rota-oner.html">Rota Öner</a>
+        <div class="menu-separator"></div>
+        <a href="arama.html" title="Site içi arama">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            Site İçi Arama
+        </a>
+        <button class="theme-switch" id="theme-switch" aria-label="Toggle dark mode">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            Tema Değiştir
+        </button>
+    </div>
+</nav>
+        <button class="nav-toggle" id="navToggle" aria-label="Menüyü aç/kapat">
+            <span class="hamburger"></span>
+        </button>
+    </div>
+</header>
+    <div class="nav-overlay" id="navOverlay"></div>
+    
+    <main id="main-content">
+        <div class="container content-area">
+            <header class="belde-baslik-alani">
+                <h1 class="belde-baslik fade-in">Bize Ulaşın</h1>
+                <p class="belde-aciklama fade-in">Aşağıdaki formu doldurarak veya sosyal medya hesaplarımızdan bize yazabilirsiniz.</p>
+            </header>
+            
+            <div id="notification" class="notification"></div>
+            
+            <form class="contact-form fade-in" id="contactForm" method="POST">
+                <div class="form-group">
+                    <input type="text" id="name" name="name" required placeholder=" ">
+                    <label for="name">Adınız Soyadınız</label>
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" id="email" name="email" required placeholder=" ">
+                    <label for="email">E-posta Adresiniz</label>
+                </div>
+                
+                <div class="form-group">
+                    <textarea id="message" name="message" required minlength="10" placeholder=" "></textarea>
+                    <label for="message">Mesajınız</label>
+                </div>
+                
+                <input type="hidden" name="csrf_token" id="csrfToken">
+                
+                <button type="submit" class="hero-cta" id="submitBtn">
+                    <span class="button-text">Gönder</span>
+                    <span class="spinner"></span>
+                </button>
+            </form>
+            
+        </div>
+    </main>
+    
+    <footer class="site-footer">
+        <div class="container">
+            <p>Türkiye'nin Seçkin Rotaları &copy; 2025</p>
+        </div>
+    </footer>
+
+    <a href="#" id="scrollTopBtn" class="scroll-top-btn" title="Yukarı Çık">↑</a>
+
+    <script src="main.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const form = document.getElementById('contactForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const notification = document.getElementById('notification');
+
+            try {
+                const csrfTokenResponse = await fetch('check_session.php?get_csrf=true');
+                const csrfData = await csrfTokenResponse.json();
+                if (csrfData.csrf_token) {
+                    document.getElementById('csrfToken').value = csrfData.csrf_token;
+                }
+            } catch(error) {
+                console.error("CSRF token alınamadı.");
+            }
+
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+                
+                const formData = new FormData(form);
+                
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+
+                try {
+                    const response = await fetch('iletisim.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+
+                    if (result.success) {
+                        notification.textContent = 'Mesajınız başarıyla gönderildi. En kısa sürede size dönüş yapacağız.';
+                        notification.className = 'notification success';
+                        form.reset();
+                    } else {
+                        notification.textContent = result.message || 'Bir hata oluştu. Lütfen form alanlarını kontrol edip tekrar deneyin.';
+                        notification.className = 'notification error';
+                    }
+                } catch (error) {
+                    notification.textContent = 'Bir ağ hatası oluştu. Lütfen tekrar deneyin.';
+                    notification.className = 'notification error';
+                } finally {
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                    notification.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

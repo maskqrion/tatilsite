@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kullanıcı Profili | Seçkin Rotalar</title>
+    <meta name="robots" content="noindex"> 
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .profile-header {
+            background-color: var(--color-surface);
+            border-radius: var(--border-radius-large);
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--color-surface);
+            box-shadow: 0 5px 20px var(--color-shadow);
+            margin: -100px auto 20px;
+            display: block;
+        }
+        .profile-name {
+            font-family: var(--font-heading);
+            font-size: 36px;
+            margin-bottom: 5px;
+        }
+        .profile-meta {
+            color: var(--color-text-muted);
+            font-size: 16px;
+        }
+        .comment-history-item {
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .comment-history-meta {
+            font-size: 14px;
+            color: var(--color-text-muted);
+            margin-bottom: 10px;
+        }
+        .comment-history-meta a {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header" id="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">Seçkin Rotalar</a>
+            <nav class="main-nav" id="mainNav">
+                <div class="nav-hover-wrapper">
+                    <div class="nav-trigger-wrapper">
+                        <div id="user-session" class="user-session">
+                        </div>
+                    </div>
+                    <div class="nav-collapsible-container">
+                        <a href="index.html">Ana Sayfa</a>
+                        <a href="rotalar.html">Rotalar</a>
+                        <a href="blog.html">Blog</a>
+                        <a href="etkinlikler.html">Etkinlikler</a>
+                        <a href="rota-oner.html">Rota Öner</a>
+                        <div class="menu-separator"></div>
+                        <a href="arama.html" title="Site içi arama">
+                            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            Site İçi Arama
+                        </a>
+                        <button class="theme-switch" id="theme-switch" aria-label="Toggle dark mode">
+                            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                            Tema Değiştir
+                        </button>
+                    </div>
+                </div>
+            </nav>
+            <button class="nav-toggle" id="navToggle" aria-label="Menüyü aç/kapat"><span class="hamburger"></span></button>
+        </div>
+    </header>
+    
+    <main id="main-content">
+        <div class="container content-area">
+            <div id="public-profile-container">
+                <p style="text-align:center;">Profil yükleniyor...</p>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="site-footer">
+        <div class="container">
+            <p>Türkiye'nin Seçkin Rotaları &copy; 2025</p>
+        </div>
+    </footer>
+
+    <script src="main.js" defer></script>
+    <script src="kullanici.js" defer></script> 
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arama | Seçkin Rotalar</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 18px;
+            border-radius: var(--border-radius);
+            border: 2px solid var(--color-border);
+            transition: all var(--transition-normal);
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 4px rgba(0, 119, 130, 0.1);
+        }
+        .results-container h2 {
+            font-family: var(--font-heading);
+            font-size: 28px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--color-border);
+            padding-bottom: 10px;
+        }
+        .result-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background-color: var(--color-surface);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 15px;
+            text-decoration: none;
+            color: var(--color-text);
+            box-shadow: 0 2px 10px var(--color-shadow);
+            transition: all var(--transition-normal);
+        }
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px var(--color-shadow);
+        }
+        .result-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: var(--border-radius);
+            flex-shrink: 0;
+        }
+        .result-content h3 {
+            font-family: var(--font-heading);
+            font-size: 20px;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+        }
+        .result-content p {
+            font-size: 15px;
+            color: var(--color-text-muted);
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header" id="header">
+    <div class="container header-container">
+        <a href="index.html" class="logo">Seçkin Rotalar</a>
+<nav class="main-nav" id="mainNav">
+    <div class="nav-trigger-wrapper">
+        <div id="user-session" class="user-session">
+            </div>
+    </div>
+
+    <div class="nav-collapsible-container">
+        <a href="index.html">Ana Sayfa</a>
+        <a href="rotalar.html">Rotalar</a>
+        <a href="hakkinda.html">Hakkında</a>
+        <a href="iletisim.html">İletişim</a>
+        <a href="blog.html">Blog</a>
+        <a href="etkinlikler.html">Etkinlikler</a>
+        <a href="rota-oner.html">Rota Öner</a>
+        <div class="menu-separator"></div>
+        <a href="arama.html" title="Site içi arama">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            Site İçi Arama
+        </a>
+        <button class="theme-switch" id="theme-switch" aria-label="Toggle dark mode">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            Tema Değiştir
+        </button>
+    </div>
+</nav>
+        <button class="nav-toggle" id="navToggle" aria-label="Menüyü aç/kapat">
+            <span class="hamburger"></span>
+        </button>
+    </div>
+</header>
+    
+    <main id="main-content">
+        <div class="container content-area">
+            <header class="belde-baslik-alani">
+                <h1 class="belde-baslik fade-in">Site İçi Arama</h1>
+                <p class="belde-aciklama fade-in">Rotaları ve blog yazılarını keşfedin.</p>
+            </header>
+            
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="Aramak istediğiniz kelimeyi yazın...">
+            </div>
+
+            <div id="results-container">
+                </div>
+        </div>
+    </main>
+    
+    <footer class="site-footer">
+        <div class="container">
+            <p>Türkiye'nin Seçkin Rotaları &copy; 2025</p>
+        </div>
+    </footer>
+
+    <script src="main.js" defer></script>
+    <script src="arama.js" defer></script> 
+</body>
+</html>

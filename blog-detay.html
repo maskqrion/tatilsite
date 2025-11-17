@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Yazısı | Seçkin Rotalar</title> 
+    <meta id="meta-description" name="description" content="">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .blog-post-hero {
+            position: relative;
+            width: 100%;
+            height: 50vh;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+        }
+        .blog-post-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+        .blog-post-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 20px;
+        }
+        .blog-post-hero h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(36px, 6vw, 64px);
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+        }
+        .blog-post-meta {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .blog-post-content {
+            max-width: 750px;
+            margin: 60px auto;
+            font-size: 18px;
+            line-height: 1.8;
+        }
+        .blog-post-content h4 {
+            font-family: var(--font-heading);
+            font-size: 28px;
+            margin-top: 40px;
+            margin-bottom: 15px;
+        }
+        .blog-post-content ul {
+            list-style-position: inside;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="progress-bar"></div>
+    <a href="#main-content" class="skip-link">Ana İçeriğe Atla</a>
+
+    <header class="site-header" id="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">Seçkin Rotalar</a>
+            <nav class="main-nav" id="mainNav">
+                <div class="nav-hover-wrapper">
+                    <div class="nav-trigger-wrapper">
+                        <div id="user-session" class="user-session">
+                        </div>
+                    </div>
+                    <div class="nav-collapsible-container">
+                        <a href="index.html">Ana Sayfa</a>
+                        <a href="rotalar.html">Rotalar</a>
+                        <a href="hakkinda.html">Hakkında</a>
+                        <a href="iletisim.html">İletişim</a>
+                        <a href="blog.html">Blog</a>
+                        <a href="etkinlikler.html">Etkinlikler</a>
+                        <a href="rota-oner.html">Rota Öner</a>
+                        <div class="menu-separator"></div>
+                        <a href="arama.html" title="Site içi arama">
+                            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            Site İçi Arama
+                        </a>
+                        <button class="theme-switch" id="theme-switch" aria-label="Açık/Koyu temayı değiştir">
+                            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                            Tema Değiştir
+                        </button>
+                    </div>
+                </div>
+            </nav>
+            <button class="nav-toggle" id="navToggle" aria-label="Menüyü aç/kapat">
+                <span class="hamburger"></span>
+            </button>
+        </div>
+    </header>
+    <div class="nav-overlay" id="navOverlay"></div>
+    
+    <main id="main-content">
+        <section id="blog-hero" class="blog-post-hero">
+            <div class="blog-post-hero-content">
+                <h1 id="blog-baslik">Yükleniyor...</h1>
+                <div class="blog-post-meta">
+                    <span id="blog-kategori"></span> | <span id="blog-tarih"></span>
+                </div>
+            </div>
+        </section>
+
+        <div class="container">
+            <article id="blog-icerik" class="blog-post-content">
+                <p>İçerik yükleniyor, lütfen bekleyin...</p>
+            </article>
+        </div>
+    </main>
+    
+    <footer class="site-footer">
+        <div class="container">
+            <p>Türkiye'nin Seçkin Rotaları &copy; 2025</p>
+        </div>
+    </footer>
+
+    <a href="#" id="scrollTopBtn" class="scroll-top-btn" title="Yukarı Çık">↑</a>
+
+    <script src="main.js" defer></script>
+    <script src="blog-detay.js" defer></script>
+</body>
+</html>

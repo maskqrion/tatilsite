@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profilim | Seçkin Rotalar</title>
+    <meta name="robots" content="noindex">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .profile-container { display: grid; grid-template-columns: 300px 1fr; gap: 40px; align-items: flex-start; }
+        .profile-sidebar { background-color: var(--color-surface); padding: 30px; border-radius: var(--border-radius-large); box-shadow: var(--box-shadow); text-align: center; position: sticky; top: 120px; }
+        .profile-picture-container { position: relative; width: 150px; height: 150px; margin: 0 auto 20px; }
+        .profile-picture { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid var(--color-surface); box-shadow: 0 4px 10px var(--color-shadow); }
+        .profile-picture-label { position: absolute; bottom: 5px; right: 5px; background-color: var(--color-primary); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all var(--transition-normal); border: 2px solid var(--color-surface); }
+        .profile-picture-label:hover { transform: scale(1.1); background-color: var(--color-secondary); }
+        #profileImageInput { display: none; }
+        .profile-main-content h2 { font-family: var(--font-heading); font-size: 28px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--color-border); }
+        .comment-history-item, .plan-card, .list-card { background-color: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--border-radius); padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .comment-history-meta { font-size: 14px; color: var(--color-text-muted); margin-bottom: 10px; }
+        .comment-history-meta a { color: var(--color-primary); font-weight: 600; }
+        .plan-card h4, .list-card h4 { font-family: var(--font-heading); font-size: 20px; }
+        .activity-panel { margin-top: 25px; padding-top: 25px; border-top: 1px solid var(--color-border); }
+        .activity-stats { display: flex; justify-content: space-around; text-align: center; }
+        .stat-item .stat-number { font-size: 28px; font-weight: 700; color: var(--color-primary); }
+        .stat-item .stat-label { font-size: 14px; color: var(--color-text-muted); }
+        .badge-container { display: flex; flex-wrap: wrap; gap: 15px; }
+        .badge { display: flex; flex-direction: column; align-items: center; text-align: center; width: 80px; }
+        .badge-icon { font-size: 40px; filter: grayscale(0.5); transition: all 0.3s ease; }
+        .badge:hover .badge-icon { filter: grayscale(0); transform: scale(1.1); }
+        .badge-name { font-weight: 600; font-size: 14px; margin-top: 5px; }
+        #hakkimda-display { font-size: 17px; line-height: 1.8; color: var(--color-text-muted); white-space: pre-wrap; }
+        /* YENİ: Checkbox stili */
+        .form-checkbox { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; justify-content: center; }
+        .form-checkbox label { color: var(--color-text-muted); font-weight: 500; }
+        @media (max-width: 768px) { .profile-container { grid-template-columns: 1fr; } .profile-sidebar { position: static; } }
+    </style>
+</head>
+<body>
+    <div id="progress-bar"></div>
+    <a href="#main-content" class="skip-link">Ana İçeriğe Atla</a>
+
+    <header class="site-header" id="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">Seçkin Rotalar</a>
+            <nav class="main-nav" id="mainNav">
+                <div class="nav-trigger-wrapper">
+                    <div id="user-session" class="user-session">
+                        </div>
+                </div>
+            
+                <div class="nav-collapsible-container">
+                    <a href="index.html">Ana Sayfa</a>
+                    <a href="rotalar.html">Rotalar</a>
+                    <a href="hakkinda.html">Hakkında</a>
+                    <a href="iletisim.html">İletişim</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="etkinlikler.html">Etkinlikler</a>
+                    <a href="rota-oner.html">Rota Öner</a>
+                    <div class="menu-separator"></div>
+                    <a href="arama.html" title="Site içi arama">
+                        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        Site İçi Arama
+                    </a>
+                    <button class="theme-switch" id="theme-switch" aria-label="Toggle dark mode">
+                        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                        Tema Değiştir
+                    </button>
+                </div>
+            </nav>
+            <button class="nav-toggle" id="navToggle" aria-label="Menüyü aç/kapat"><span class="hamburger"></span></button>
+        </div>
+    </header>
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <main id="main-content">
+        <div class="container content-area">
+            <header class="belde-baslik-alani">
+                <h1 id="karsilama-mesaji" class="belde-baslik fade-in">Yükleniyor...</h1>
+            </header>
+
+            <div id="profil-icerigi" class="profile-container" style="display: none;">
+                <aside class="profile-sidebar">
+                    <form id="profileUpdateForm">
+                        <div class="profile-picture-container">
+                            <img src="assets/avatars/default.png" alt="Profil Resmi" id="profileImagePreview" class="profile-picture">
+                            <label for="profileImageInput" class="profile-picture-label" title="Fotoğrafı Değiştir">✏️</label>
+                            <input type="file" id="profileImageInput" name="profile_image" accept="image/png, image/jpeg, image/gif">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="name" name="name" required placeholder=" ">
+                            <label for="name">Adınız Soyadınız</label>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="hakkimda" name="hakkimda" placeholder=" " rows="4"></textarea>
+                            <label for="hakkimda">Hakkımda</label>
+                        </div>
+                        <button type="submit" class="hero-cta" style="width: 100%;">Bilgileri Güncelle</button>
+                    </form>
+
+                    <div id="aktivite-paneli" class="activity-panel"></div>
+                    <a href="favorilerim.html" class="hero-cta" style="width: 100%; text-align: center; margin-top: 20px;">Favorilerimi Gör</a>
+                </aside>
+
+                <div class="profile-main-content">
+                    <section id="about-me-section">
+                        <h2>Hakkımda</h2>
+                        <p id="hakkimda-display">Henüz kendiniz hakkında bir şey yazmamışsınız.</p>
+                    </section>
+
+                    <section id="badges-section" style="margin-top: 40px;">
+                        <h2>Rozetlerim</h2>
+                        <div id="rozetler-container" class="badge-container"></div>
+                    </section>
+
+                    <section id="yorum-gecmisi-section" style="margin-top: 40px;">
+                        <h2>Son Yorumlarım</h2>
+                        <div id="yorum-gecmisi"></div>
+                    </section>
+
+                    <section id="gezi-planlari-section" style="margin-top: 40px;">
+                        <h2>Gezi Planlarım</h2>
+                        <div id="gezi-planlari"></div>
+                    </section>
+
+                    <section id="kullanici-listeleri-section" style="margin-top: 40px;">
+                         <h2>Listelerim</h2>
+                        <div id="kullanici-listeleri"></div>
+                        <form id="yeniListeForm" class="contact-form" style="margin-top: 30px; padding-top: 20px; border-top: 2px solid var(--color-border);">
+                            <h3>Yeni Liste Oluştur</h3>
+                            <div class="form-group"><input type="text" id="liste_adi" name="liste_adi" required placeholder=" "><label for="liste_adi">Liste Başlığı</label></div>
+                            <div class="form-group"><textarea id="liste_aciklama" name="liste_aciklama" placeholder=" "></textarea><label for="liste_aciklama">Açıklama</label></div>
+                            <div class="form-checkbox">
+                                <input type="checkbox" id="herkese_acik" name="herkese_acik" value="1">
+                                <label for="herkese_acik">Bu listeyi herkese açık olarak yayınla.</label>
+                            </div>
+                            <button type="submit" class="hero-cta">Listeyi Oluştur</button>
+                        </form>
+                    </section>
+                </div>
+            </div>
+            <div id="giris-uyarisi" style="text-align: center;"></div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>Türkiye'nin Seçkin Rotaları &copy; 2025</p>
+        </div>
+    </footer>
+
+    <a href="#" id="scrollTopBtn" class="scroll-top-btn" title="Yukarı Çık">↑</a>
+
+    <script src="main.js" defer></script>
+    <script src="profilim.js" defer></script>
+</body>
+</html>

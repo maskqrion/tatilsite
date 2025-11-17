@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mekan Yönetim Paneli | Seçkin Rotalar</title>
+    <meta name="robots" content="noindex">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .panel-container { max-width: 900px; margin: 40px auto; padding: 30px; background: var(--color-surface); border-radius: var(--border-radius-large); box-shadow: var(--box-shadow); }
+        .panel-container h1 { text-align: center; font-family: var(--font-heading); margin-bottom: 30px; }
+        .mekan-list-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-radius: var(--border-radius); background-color: var(--color-background); margin-bottom: 15px; }
+        .edit-btn { background-color: var(--color-primary); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 25px; }
+        .full-width { grid-column: 1 / -1; }
+        .form-actions { display: flex; gap: 15px; margin-top: 20px; }
+        .tabs { display: flex; border-bottom: 2px solid var(--color-border); margin: 40px 0 20px 0; flex-wrap: wrap; }
+        .tab-link { padding: 10px 20px; cursor: pointer; border: none; background: transparent; font-size: 16px; font-weight: 600; color: var(--color-text-muted); }
+        .tab-link.active { color: var(--color-primary); border-bottom: 2px solid var(--color-primary); }
+        .tab-content { display: none; padding-top: 20px; }
+        .tab-content.active { display: block; }
+        .premium-feature-lock { text-align: center; background-color: var(--color-background); padding: 30px; border-radius: var(--border-radius); border: 2px dashed var(--color-border); }
+        .reservation-card { background-color: var(--color-background); border-radius: var(--border-radius); padding: 20px; margin-bottom: 15px; border-left: 4px solid var(--color-primary); }
+        .reservation-card h4 { font-family: var(--font-heading); font-size: 18px; margin-bottom: 10px; }
+        .reservation-card p { font-size: 15px; color: var(--color-text-muted); margin-bottom: 5px; }
+        .reservation-card .meta { font-weight: 600; color: var(--color-text); }
+        .reservation-actions { display: flex; gap: 10px; margin-top: 15px; }
+        .approve-btn { background-color: var(--color-success); color: white; }
+        .reject-btn { background-color: var(--color-error); color: white; }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a href="index.html" class="logo">Seçkin Rotalar - Mekan Paneli</a>
+        </div>
+    </header>
+
+    <main>
+        <div id="panel-container" class="panel-container">
+            <h1>Mekanım</h1>
+            <div id="mekan-bilgileri-container">
+                <p>Mekan bilgileriniz yükleniyor...</p>
+            </div>
+
+            <div id="mekanDuzenlemeAlani" style="display: none;">
+                <div class="tabs">
+                    <button class="tab-link active" data-tab="temelBilgiler">Temel Bilgiler</button>
+                    <button class="tab-link" data-tab="ozelTeklif">Özel Teklif</button>
+                    <button class="tab-link" data-tab="galeri">Galeri Yönetimi</button>
+                    <button class="tab-link" data-tab="rezervasyonlar">Rezervasyonlar</button> <button class="tab-link" data-tab="istatistikler">İstatistikler</button>
+                </div>
+
+                <div id="temelBilgiler" class="tab-content active">
+                    <form id="mekanDuzenleForm" class="contact-form">
+                        <input type="hidden" id="mekanId" name="mekan_id">
+                        <div class="form-grid">
+                            <div class="form-group"><input type="text" id="ad" name="ad" required placeholder=" "><label for="ad">Mekan Adı</label></div>
+                            <div class="form-group"><input type="text" id="kategori" name="kategori" required placeholder=" "><label for="kategori">Kategori (Örn: Lüks Otel)</label></div>
+                            <div class="form-group full-width"><textarea id="aciklama" name="aciklama" placeholder=" " rows="5"></textarea><label for="aciklama">Açıklama</label></div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="hero-cta">Değişiklikleri Kaydet</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="ozelTeklif" class="tab-content">
+                    <div id="ozelTeklifFormContainer"></div>
+                </div>
+
+                <div id="galeri" class="tab-content">
+                     <div id="galeriYonetimContainer"></div>
+                </div>
+                
+                <div id="rezervasyonlar" class="tab-content">
+                    <h2>Gelen Rezervasyon Talepleri</h2>
+                    <div id="rezervasyonListesiContainer">
+                        <p>Rezervasyon talepleri yükleniyor...</p>
+                    </div>
+                </div>
+                
+                <div id="istatistikler" class="tab-content">
+                    <div class="premium-feature-lock">
+                        <h3>Yakında!</h3>
+                        <p>Sayfa görüntülenmesi gibi detaylı istatistikleri görmek için Premium üyeliğe geçin.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="mekan_paneli.js" defer></script>
+</body>
+</html>

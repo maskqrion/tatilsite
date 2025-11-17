@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rota Detayları | Seçkin Rotalar</title> 
+    <meta id="meta-description" name="description" content="">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <style>
+        .venue-header-actions { display: flex; gap: 10px; flex-shrink: 0; }
+        .venue-header-actions .hero-cta, .venue-header-actions .directions-btn { padding: 8px 16px; font-size: 14px; }
+        /* Topluluk Galerisi Stilleri */
+        .community-gallery-item { position: relative; }
+        .community-gallery-item .uploader-info { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); color: white; padding: 20px 10px 10px 10px; font-size: 14px; font-weight: 500; border-radius: 0 0 var(--border-radius) var(--border-radius); opacity: 0; transition: opacity 0.3s ease; }
+        .community-gallery-item:hover .uploader-info { opacity: 1; }
+        .notification { padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius); text-align: center; font-weight: 500; }
+        .notification.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .notification.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+    <div id="progress-bar"></div>
+    <a href="#main-content" class="skip-link">Ana İçeriğe Atla</a>
+
+    <header class="site-header" id="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">Seçkin Rotalar</a>
+            <nav class="main-nav" id="mainNav">
+                <div class="nav-hover-wrapper">
+                    <div class="nav-trigger-wrapper">
+                        <div id="user-session" class="user-session">
+                        </div>
+                    </div>
+                    <div class="nav-collapsible-container">
+                        <a href="index.html">Ana Sayfa</a>
+                        <a href="rotalar.html">Rotalar</a>
+                         <a href="kesfet.html">Keşfet</a>
+                        <a href="hakkinda.html">Hakkında</a>
+                        <a href="iletisim.html">İletişim</a>
+                        <a href="blog.html">Blog</a>
+                        <a href="etkinlikler.html">Etkinlikler</a>
+                        <a href="rota-oner.html">Rota Öner</a>
+                        <div class="menu-separator"></div>
+                        <a href="arama.html" title="Site içi arama">
+                            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            Site İçi Arama
+                        </a>
+                        <button class="theme-switch" id="theme-switch" aria-label="Toggle dark mode">
+                            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                            Tema Değiştir
+                        </button>
+                    </div>
+                </div>
+            </nav>
+            <button class="nav-toggle" id="navToggle" aria-label="Menüyü aç/kapat">
+                <span class="hamburger"></span>
+            </button>
+        </div>
+    </header>
+    <div class="nav-overlay" id="navOverlay"></div>
+    
+    <main id="main-content">
+        <section class="destination-hero" id="rota-hero">
+            <div class="destination-hero-background"></div>
+            <div class="hero-content">
+                <h1 id="rota-baslik">Yükleniyor...</h1>
+                
+                <div id="rota-puanlama-alani" class="rota-rating-container" style="display: none; justify-content: center; align-items: center; gap: 10px; margin-top: 15px; color: #fff; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                    <div class="stars-outer">
+                        <div class="stars-inner"></div>
+                    </div>
+                    <span class="rating-text"></span>
+                </div>
+
+                <p id="rota-altbaslik"></p>
+            </div>
+        </section>
+
+        <div class="container quick-nav-container">
+            <nav class="quick-nav">
+                <div class="quick-nav-links" id="quickNavLinks">
+                    </div>
+            </nav>
+        </div>
+
+        <div class="container content-area">
+            <article class="detail-content">
+                <section id="tanitim">
+                    <h2 class="section-title">Genel Bakış</h2>
+                    <div id="route-actions" style="text-align: center; margin-bottom: 30px;">
+                        </div>
+                    <div id="tanitim-metni"></div>
+                    <div id="video-container-wrapper" class="fade-in" style="display: none; margin-top: 40px;">
+                        <h3 class="section-title" style="font-size: 28px;">Videoyu İzle</h3>
+                        <div id="video-container" class="video-container"></div>
+                    </div>
+                    </section>
+                
+                <section id="gallery-section" class="fade-in" style="display: none;">
+                    <h2 class="section-title">Fotoğraf Galerisi</h2>
+                    <div id="gallery-container" class="gallery-container"></div>
+                </section>
+                
+                <section id="community-gallery-section" class="fade-in" style="display: none;">
+                    <h2 class="section-title">Topluluk Galerisi</h2>
+                    <p style="text-align: center; max-width: 600px; margin: -30px auto 40px;">Gezginlerin gözünden bu rotanın en güzel kareleri.</p>
+                    <div id="community-gallery-container" class="gallery-container">
+                    </div>
+                    <div id="photo-upload-container" class="venue-card" style="margin-top: 40px;">
+                        <div id="photo-upload-auth-warning" style="text-align: center;">
+                            <p>Siz de bu rotada çektiğiniz bir fotoğrafı paylaşmak için lütfen <a href="login.html">giriş yapın</a>.</p>
+                        </div>
+                        <form id="photoUploadForm" class="contact-form" style="display: none;">
+                             <h4>Fotoğraf Yükle</h4>
+                             <p style="text-align: center; margin-bottom: 20px;">Yüklediğiniz fotoğraf, editör onayından sonra yayınlanacaktır.</p>
+                             <div id="upload-notification" class="notification" style="display: none;"></div>
+                             <div class="form-group">
+                                 <input type="file" id="user_photo" name="user_photo" accept="image/png, image/jpeg" required>
+                             </div>
+                             <input type="hidden" id="csrfTokenPhoto" name="csrf_token">
+                             <button type="submit" class="hero-cta">Fotoğrafı Gönder</button>
+                        </form>
+                    </div>
+                </section>
+
+                <section id="map-section" class="map-container fade-in">
+                    <h2 class="section-title">Bölge Haritası</h2>
+                    <p>Önerilen mekanları harita üzerinde keşfedin.</p>
+                    <div id="map"></div>
+                </section>
+
+                <section id="ipuclari">
+                    <h2 class="section-title">Seyahat İpuçları</h2>
+                    <div class="tips-section" id="ipuclari-listesi"></div>
+                </section>
+                
+                <section id="nerede-kalinir">
+                    <h2 class="section-title">Nerede Kalınır?</h2>
+                    <div id="nerede-kalinir-listesi"></div>
+                </section>
+
+                <section id="ne-yenir">
+                    <h2 class="section-title">Ne Yenir? & Nereye Gidilir?</h2>
+                    <div id="ne-yenir-listesi"></div>
+                </section>
+
+                <section id="mekan-onerisi-section" class="fade-in">
+                    <h2 class="section-title">Sizin de Bir Öneriniz Var Mı?</h2>
+                    <div id="mekan-onerisi-container" class="venue-card">
+                        <div id="mekan-onerisi-uyarisi" style="text-align: center;">
+                            <p>Bu rotaya eklemek istediğiniz bir mekan (restoran, otel, plaj vb.) veya bir ipucu varsa bizimle paylaşın!</p>
+                        </div>
+                        <form id="mekanOneriFormu" class="contact-form" style="display: none; margin-top: 20px;">
+                            <div class="form-group">
+                                <select name="oneri_tipi" class="filter-select">
+                                    <option value="mekan">Mekan Önerisi</option>
+                                    <option value="ipucu">İpucu Önerisi</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="oneri_baslik" name="oneri_baslik" required placeholder=" ">
+                                <label for="oneri_baslik">Mekan Adı veya İpucu Başlığı</label>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="oneri_aciklama" name="oneri_aciklama" required minlength="20" placeholder=" "></textarea>
+                                <label for="oneri_aciklama">Neden önerdiğinizi kısaca açıklayın...</label>
+                            </div>
+                            <input type="hidden" id="csrfTokenOneri" name="csrf_token">
+                            <button type="submit" class="hero-cta">Öneriyi Gönder</button>
+                        </form>
+                    </div>
+                </section>
+
+                <section id="gezi-plani">
+                    <h2 class="section-title">Gezi Planı Oluştur</h2>
+                    <div id="gezi-plani-araci">
+                        <div id="gezi-plani-uyarisi" style="text-align: center; margin-bottom: 20px;"></div>
+                        <div id="gezi-plani-olusturucu" style="display: none;">
+                             <div class="form-group">
+                                <input type="text" id="geziPlaniAdi" placeholder=" " required>
+                                <label for="geziPlaniAdi">Planınıza Bir İsim Verin</label>
+                            </div>
+                            <div id="gezi-plani-listesi">
+                                <p>Henüz planınıza hiçbir öğe eklemediniz.</p>
+                            </div>
+                            <div class="form-actions" style="justify-content: center;">
+                                <button id="yeniGunEkleBtn" class="hero-cta" style="background-color: var(--color-secondary);">Yeni Gün Ekle</button>
+                                <button id="planiKaydetBtn" class="hero-cta">Planı Kaydet</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="benzer-rotalar-section" class="fade-in" style="display: none;">
+                    <h2 class="section-title">İlginizi Çekebilir</h2>
+                    <div id="benzerRotalarListesi" class="destinasyon-listesi">
+                        </div>
+                </section>
+
+                <section id="sorular" class="fade-in">
+                    <h2 class="section-title">Sorular ve Cevaplar</h2>
+                    <div id="soru-formu-container" class="venue-card">
+                        <h3>Bir Soru Sorun</h3>
+                        <div id="soru-session-status-message"></div>
+                        <form id="soruFormu" style="display: none;">
+                            <div class="form-group">
+                                <textarea id="soruMetni" name="yorumMetni" required minlength="15" placeholder=" "></textarea>
+                                <label for="soruMetni">Bu rota hakkında merak ettiklerinizi sorun...</label>
+                            </div>
+                            <input type="hidden" name="yorum_tipi" value="soru">
+                            <input type="hidden" id="csrfTokenSoru" name="csrf_token">
+                            <button type="submit" class="hero-cta">Soruyu Gönder</button>
+                        </form>
+                    </div>
+                    <div id="soru-listesi" class="comments-list-container">
+                    </div>
+                </section>
+
+                <section id="yorumlar" class="fade-in">
+                    <h2 class="section-title">Yorumlar ve Değerlendirmeler</h2>
+                    
+                    <div id="yorum-formu-container" class="venue-card">
+                        <h3>Bir Yorum Bırakın</h3>
+                        <div id="session-status-message"></div> 
+                        <form id="yorumFormu" style="display: none;">
+                             <input type="hidden" name="yorum_tipi" value="yorum">
+                            <div class="form-group">
+                                <label style="position: static; font-size: 1rem; color: var(--color-text); font-weight: 600; transform: none; pointer-events: auto;">Puanınız:</label>
+                                <div class="rating-stars">
+                                    <input type="radio" id="star5" name="puan" value="5" required><label for="star5" title="5 yıldız">★</label>
+                                    <input type="radio" id="star4" name="puan" value="4"><label for="star4" title="4 yıldız">★</label>
+                                    <input type="radio" id="star3" name="puan" value="3"><label for="star3" title="3 yıldız">★</label>
+                                    <input type="radio" id="star2" name="puan" value="2"><label for="star2" title="2 yıldız">★</label>
+                                    <input type="radio" id="star1" name="puan" value="1"><label for="star1" title="1 yıldız">★</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="yorumMetni" name="yorumMetni" required minlength="15" placeholder=" "></textarea>
+                                <label for="yorumMetni">Deneyimlerinizi paylaşın...</label>
+                            </div>
+                            <input type="hidden" id="csrfTokenYorum" name="csrf_token">
+                            <button type="submit" class="hero-cta">Yorumu Gönder</button>
+                        </form>
+                    </div>
+
+                    <div id="yorum-listesi" class="comments-list-container">
+                        </div>
+                </section>
+            </article>
+        </div>
+    </main>
+    
+    <div id="addToListModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Listelerim</h3>
+                <button id="modalCloseBtn" class="modal-close-btn">×</button>
+            </div>
+            <div id="userListsContainer" class="user-lists-container">
+                </div>
+        </div>
+    </div>
+
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-content">
+            <button id="lightbox-close" class="lightbox-close">×</button>
+            <button id="lightbox-prev" class="lightbox-prev">❮</button>
+            <img id="lightbox-img" class="lightbox-img" src="">
+            <button id="lightbox-next" class="lightbox-next">❯</button>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>Türkiye'nin Seçkin Rotaları &copy; 2025</p>
+        </div>
+    </footer>
+
+    <a href="#" id="scrollTopBtn" class="scroll-top-btn" title="Yukarı Çık">↑</a>
+
+    <script src="main.js" defer></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="rota-detay.js" defer></script>
+    <script src="lightbox.js" defer></script>
+    <script src="yorum.js" defer></script>
+</body>
+</html>

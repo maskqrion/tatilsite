@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gezginler Liderlik Tablosu | Seçkin Rotalar</title>
+    <meta name="description" content="Sitemizdeki en aktif ve en çok katkıda bulunan gezginleri keşfedin.">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .leaderboard-container { max-width: 800px; margin: 40px auto; }
+        .leaderboard-item { display: flex; align-items: center; background-color: var(--color-surface); border-radius: var(--border-radius); padding: 15px; margin-bottom: 15px; box-shadow: var(--box-shadow); transition: all var(--transition-normal); border-left: 5px solid transparent; }
+        .leaderboard-item:hover { transform: translateY(-5px); box-shadow: var(--box-shadow-hover); }
+        .leaderboard-item.rank-1 { border-color: #FFD700; } /* Altın */
+        .leaderboard-item.rank-2 { border-color: #C0C0C0; } /* Gümüş */
+        .leaderboard-item.rank-3 { border-color: #CD7F32; } /* Bronz */
+        .leaderboard-rank { font-size: 24px; font-weight: 700; font-family: var(--font-heading); color: var(--color-text-muted); width: 50px; text-align: center; }
+        .leaderboard-rank-1 .leaderboard-rank { color: #FFD700; }
+        .leaderboard-rank-2 .leaderboard-rank { color: #C0C0C0; }
+        .leaderboard-rank-3 .leaderboard-rank { color: #CD7F32; }
+        .leaderboard-user img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin: 0 15px; }
+        .leaderboard-user { flex-grow: 1; display: flex; align-items: center; text-decoration: none; }
+        .leaderboard-user-name { font-weight: 600; font-size: 18px; color: var(--color-text); }
+        .leaderboard-score { font-size: 22px; font-weight: 700; color: var(--color-primary); font-family: var(--font-heading); }
+    </style>
+</head>
+<body>
+    <header class="site-header" id="header">
+        </header>
+    
+    <main id="main-content">
+        <div class="container content-area">
+            <header class="belde-baslik-alani">
+                <h1 class="belde-baslik fade-in">Gezginler Liderlik Tablosu</h1>
+                <p class="belde-aciklama fade-in">En çok katkıda bulunan gezginlerimiz.</p>
+            </header>
+            <div id="liderlik-tablosu-container" class="leaderboard-container">
+                <p style="text-align:center;">Liderlik tablosu yükleniyor...</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        </footer>
+
+    <script src="main.js" defer></script>
+    <script src="liderlik-tablosu.js" defer></script>
+</body>
+</html>
