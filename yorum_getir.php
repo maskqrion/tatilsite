@@ -1,10 +1,6 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 session_start();
-require 'db_config.php'; 
+require 'db_config.php';
 header('Content-Type: application/json');
 
 $rota_id = $_GET['rota_id'] ?? '';
@@ -16,9 +12,8 @@ if (empty($rota_id)) {
 }
 
 try {
-    // KOD GÜNCELLENDİ: bind_result() kullanıldı
-    $stmt = $conn->prepare("
-        SELECT 
+    $stmt = $pdo->prepare("
+        SELECT
             y.id, y.user_id, y.yorum_metni, y.tarih, y.puan, y.parent_id, y.yorum_tipi,
             u.name AS kullanici_adi,
             (SELECT COUNT(*) FROM yorum_begeni WHERE yorum_id = y.id) as begeni_sayisi,
@@ -28,35 +23,30 @@ try {
         WHERE y.rota_id = ?
         ORDER BY y.tarih ASC
     ");
-    
+
     $user_id_to_bind = $current_user_id ?? 0;
-    $stmt->bind_param("is", $user_id_to_bind, $rota_id);
-    $stmt->execute();
+    $stmt->execute([$user_id_to_bind, $rota_id]);
+    $tum_yorumlar_raw = $stmt->fetchAll();
 
-    $stmt->bind_result(
-        $id, $user_id, $yorum_metni, $tarih, $puan, $parent_id, $yorum_tipi,
-        $kullanici_adi, $begeni_sayisi, $kullanici_begendi
-    );
-
+    // Çıktı için güvenli hale getir
     $tum_yorumlar = [];
-    while ($stmt->fetch()) {
+    foreach ($tum_yorumlar_raw as $row) {
         $tum_yorumlar[] = [
-            'id' => $id,
-            'user_id' => $user_id,
-            'yorum_metni' => htmlspecialchars($yorum_metni, ENT_QUOTES, 'UTF-8'),
-            'tarih' => date("d F Y", strtotime($tarih)),
-            'puan' => $puan,
-            'parent_id' => $parent_id,
-            'yorum_tipi' => $yorum_tipi,
-            'kullanici_adi' => htmlspecialchars($kullanici_adi, ENT_QUOTES, 'UTF-8'),
-            'begeni_sayisi' => $begeni_sayisi,
-            'kullanici_begendi' => !empty($kullanici_begendi) && $kullanici_begendi > 0,
+            'id' => $row['id'],
+            'user_id' => $row['user_id'],
+            'yorum_metni' => htmlspecialchars($row['yorum_metni'], ENT_QUOTES, 'UTF-8'),
+            'tarih' => date("d F Y", strtotime($row['tarih'])),
+            'puan' => $row['puan'],
+            'parent_id' => $row['parent_id'],
+            'yorum_tipi' => $row['yorum_tipi'],
+            'kullanici_adi' => htmlspecialchars($row['kullanici_adi'], ENT_QUOTES, 'UTF-8'),
+            'begeni_sayisi' => $row['begeni_sayisi'],
+            'kullanici_begendi' => !empty($row['kullanici_begendi']) && $row['kullanici_begendi'] > 0,
             'yanitlar' => []
         ];
     }
-    $stmt->close();
 
-    // Ağaç yapısını oluşturan bu kısım aynı kalabilir
+    // Ağaç yapısını oluştur
     $yorum_map = [];
     foreach ($tum_yorumlar as $yorum) {
         $yorum_map[$yorum['id']] = $yorum;
@@ -77,24 +67,23 @@ try {
         }
     }
     unset($yorum);
-    
+
     usort($yorum_agaci, function($a, $b) {
         return strtotime($b['tarih']) - strtotime($a['tarih']);
     });
-     usort($soru_agaci, function($a, $b) {
+    usort($soru_agaci, function($a, $b) {
         return strtotime($b['tarih']) - strtotime($a['tarih']);
     });
 
     echo json_encode([
-        'success' => true, 
-        'yorumlar' => $yorum_agaci, 
+        'success' => true,
+        'yorumlar' => $yorum_agaci,
         'sorular' => $soru_agaci,
         'current_user_id' => $current_user_id
     ]);
 
 } catch (Exception $e) {
-     echo json_encode(['success' => false, 'message' => 'Yorumlar getirilirken bir sunucu hatası oluştu: ' . $e->getMessage()]);
+    error_log('yorum_getir hatası: ' . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'Yorumlar getirilirken bir sunucu hatası oluştu.']);
 }
-
-$conn->close();
 ?>

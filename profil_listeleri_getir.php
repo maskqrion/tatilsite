@@ -10,31 +10,18 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 }
 
 $user_id = $_SESSION['id'];
+$pdo = getDB();
 $response = ['success' => true, 'listeler' => []];
 
 try {
-    // bind_result Düzeltmesi
-    $stmt = $conn->prepare("SELECT id, liste_adi, aciklama, olusturulma_tarihi FROM kullanici_listeleri WHERE user_id = ? ORDER BY olusturulma_tarihi DESC");
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $stmt->bind_result($id, $liste_adi, $aciklama, $olusturulma_tarihi);
-    
-    $listeler = [];
-    while ($stmt->fetch()) {
-        $listeler[] = [
-            'id' => $id,
-            'liste_adi' => $liste_adi,
-            'aciklama' => $aciklama,
-            'olusturulma_tarihi' => $olusturulma_tarihi
-        ];
-    }
-    $stmt->close();
-    $response['listeler'] = $listeler;
+    $stmt = $pdo->prepare("SELECT id, liste_adi, aciklama, olusturulma_tarihi FROM kullanici_listeleri WHERE user_id = ? ORDER BY olusturulma_tarihi DESC");
+    $stmt->execute([$user_id]);
+    $response['listeler'] = $stmt->fetchAll();
 
-} catch (Exception $e) {
+} catch (PDOException $e) {
+    error_log('profil_listeleri_getir.php hatası: ' . $e->getMessage());
     $response = ['success' => false, 'message' => 'Listeler getirilirken bir hata oluştu.'];
 }
 
 echo json_encode($response);
-$conn->close();
 ?>

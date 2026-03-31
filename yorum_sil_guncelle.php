@@ -10,32 +10,36 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit;
 }
 
+// CSRF kontrolü
+if (empty($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Geçersiz güvenlik anahtarı.']);
+    exit;
+}
+
 $user_id = $_SESSION['id'];
 $action = $_POST['action'] ?? '';
 
 if ($action === 'delete') {
-    $yorum_id = $_POST['id'] ?? 0;
+    $yorum_id = (int)($_POST['id'] ?? 0);
     if ($yorum_id > 0) {
-        // Yorumun gerçekten bu kullanıcıya ait olup olmadığını kontrol et
-        $stmt_check = $conn->prepare("SELECT user_id FROM yorumlar WHERE id = ?");
-        $stmt_check->bind_param("i", $yorum_id);
-        $stmt_check->execute();
-        $result_check = $stmt_check->get_result();
-        $yorum_sahibi = $result_check->fetch_assoc();
-        $stmt_check->close();
+        try {
+            // Yorumun gerçekten bu kullanıcıya ait olup olmadığını kontrol et
+            $stmt_check = $pdo->prepare("SELECT user_id FROM yorumlar WHERE id = ?");
+            $stmt_check->execute([$yorum_id]);
+            $yorum_sahibi = $stmt_check->fetch();
 
-        if ($yorum_sahibi && $yorum_sahibi['user_id'] == $user_id) {
-            $stmt_delete = $conn->prepare("DELETE FROM yorumlar WHERE id = ?");
-            $stmt_delete->bind_param("i", $yorum_id);
-            if ($stmt_delete->execute()) {
+            if ($yorum_sahibi && (int)$yorum_sahibi['user_id'] === (int)$user_id) {
+                $stmt_delete = $pdo->prepare("DELETE FROM yorumlar WHERE id = ?");
+                $stmt_delete->execute([$yorum_id]);
                 echo json_encode(['success' => true, 'message' => 'Yorum başarıyla silindi.']);
             } else {
-                echo json_encode(['success' => false, 'message' => 'Silme sırasında bir hata oluştu.']);
+                http_response_code(403);
+                echo json_encode(['success' => false, 'message' => 'Bu yorumu silme yetkiniz yok.']);
             }
-            $stmt_delete->close();
-        } else {
-            http_response_code(403);
-            echo json_encode(['success' => false, 'message' => 'Bu yorumu silme yetkiniz yok.']);
+        } catch (Exception $e) {
+            error_log('yorum_sil_guncelle hatası: ' . $e->getMessage());
+            echo json_encode(['success' => false, 'message' => 'Silme sırasında bir hata oluştu.']);
         }
     } else {
         echo json_encode(['success' => false, 'message' => 'Geçersiz yorum kimliği.']);
@@ -43,6 +47,4 @@ if ($action === 'delete') {
 } else {
     echo json_encode(['success' => false, 'message' => 'Geçersiz işlem.']);
 }
-
-$conn->close();
 ?>

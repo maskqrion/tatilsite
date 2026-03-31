@@ -1,11 +1,19 @@
 <?php
+session_start();
 require 'db_config.php';
-require 'sende-email.php'; 
+require 'sende-email.php';
 header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['success' => false, 'message' => 'Geçersiz istek metodu.']);
+    exit;
+}
+
+// CSRF koruması
+if (!isset($_SESSION['csrf_token']) || !isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Geçersiz CSRF token.']);
     exit;
 }
 
@@ -16,39 +24,30 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-// bind_result Düzeltmesi
-$stmt = $conn->prepare("SELECT id, name FROM users WHERE email = ?");
-$stmt->bind_param("s", $email);
-$stmt->execute();
-$stmt->bind_result($id, $name);
-$user = null;
-if($stmt->fetch()) {
-    $user = ['id' => $id, 'name' => $name];
-}
-$stmt->close();
+// Kullanıcıyı e-posta adresine göre ara
+$stmt = $pdo->prepare("SELECT id, name FROM users WHERE email = :email");
+$stmt->execute([':email' => $email]);
+$user = $stmt->fetch();
 
-if (!$user) {
+if ($user === false) {
     echo json_encode(['success' => true, 'message' => 'Eğer bu e-posta adresi sistemimizde kayıtlıysa, bir sıfırlama bağlantısı gönderilmiştir.']);
-    $conn->close();
     exit;
 }
 
 $token = bin2hex(random_bytes(32));
 $token_hash = hash('sha256', $token);
-$expiry_date = date('Y-m-d H:i:s', time() + 3600); 
+$expiry_date = date('Y-m-d H:i:s', time() + 3600);
 
-$stmt_update = $conn->prepare("UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?");
-$stmt_update->bind_param("sss", $token_hash, $expiry_date, $email);
-
-if (!$stmt_update->execute()) {
+try {
+    $stmt_update = $pdo->prepare("UPDATE users SET reset_token = :token, reset_token_expiry = :expiry WHERE email = :email");
+    $stmt_update->execute([':token' => $token_hash, ':expiry' => $expiry_date, ':email' => $email]);
+} catch (PDOException $e) {
+    error_log('sifre-talep.php: Token güncelleme hatası: ' . $e->getMessage());
     echo json_encode(['success' => false, 'message' => 'Bir hata oluştu. Lütfen tekrar deneyin.']);
-    $stmt_update->close();
-    $conn->close();
     exit;
 }
-$stmt_update->close();
 
-$reset_link = "https://www.seckinrotalar.com/sifre-sifirla.html?token=" . $token; 
+$reset_link = "https://www.seckinrotalar.com/sifre-sifirla.html?token=" . $token;
 
 $to = $email;
 $toName = $user['name'];
@@ -70,6 +69,4 @@ if (sendEmail($to, $toName, $subject, $message_body, true)) {
     error_log("sifre-talep.php: PHPMailer e-posta gönderemedi. SMTP ayarlarını kontrol edin.");
     echo json_encode(['success' => false, 'message' => "E-posta gönderilirken bir sunucu hatası oluştu."]);
 }
-
-$conn->close();
 ?>

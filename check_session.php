@@ -1,9 +1,9 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 // Veritabanı bağlantısı
-require 'db_config.php'; 
+require 'db_config.php';
 
 header('Content-Type: application/json');
 
@@ -18,17 +18,13 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     $response['loggedin'] = true;
     $response['id'] = $_SESSION['id'];
     $response['name'] = $_SESSION['name'];
-    
-    // YENİ: get_result() KODU bind_result() İLE GÜNCELLENDİ
-    $stmt_role = $conn->prepare("SELECT rol FROM users WHERE id = ?");
-    $stmt_role->bind_param("i", $_SESSION['id']);
-    $stmt_role->execute();
-    $stmt_role->bind_result($rol);
-    $stmt_role->fetch();
-    $response['rol'] = $rol ?? 'user';
-    $stmt_role->close();
+
+    // Kullanıcı rolünü veritabanından al
+    $stmt_role = $pdo->prepare("SELECT rol FROM users WHERE id = :id");
+    $stmt_role->execute([':id' => $_SESSION['id']]);
+    $row = $stmt_role->fetch();
+    $response['rol'] = $row['rol'] ?? 'user';
 }
 
-$conn->close();
 echo json_encode($response);
 ?>
