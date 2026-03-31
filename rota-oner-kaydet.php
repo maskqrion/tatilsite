@@ -31,18 +31,14 @@ if (empty($onerilen_rota) || empty($bolge) || empty($aciklama)) {
 
 // Yeni bir veritabanı tablosu oluşturmak için hazırlık: `rota_onerileri`
 try {
-    $stmt = $conn->prepare("INSERT INTO rota_onerileri (user_id, rota_adi, bolge, aciklama, status) VALUES (?, ?, ?, ?, 'pending')");
-    $stmt->bind_param("isss", $user_id, $onerilen_rota, $bolge, $aciklama);
+    $pdo = getDB();
+    $stmt = $pdo->prepare("INSERT INTO rota_onerileri (user_id, rota_adi, bolge, aciklama, status) VALUES (?, ?, ?, ?, 'pending')");
+    $stmt->execute([$user_id, $onerilen_rota, $bolge, $aciklama]);
 
-    if ($stmt->execute()) {
-        echo json_encode(['success' => true, 'message' => 'Rota öneriniz başarıyla gönderildi.']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Öneri kaydedilirken bir hata oluştu.']);
-    }
-    $stmt->close();
+    echo json_encode(['success' => true, 'message' => 'Rota öneriniz başarıyla gönderildi.']);
+
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => 'Veritabanı hatası: ' . $e->getMessage()]);
+    error_log('rota-oner-kaydet hatası: ' . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'Öneri kaydedilirken bir hata oluştu.']);
 }
-
-$conn->close();
 ?>

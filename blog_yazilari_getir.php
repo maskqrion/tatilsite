@@ -2,17 +2,12 @@
 require 'db_config.php';
 header('Content-Type: application/json');
 
-$sql = "SELECT id, baslik, kategori, tarih, resim, ozet FROM blog_yazilari ORDER BY tarih DESC";
-$result = $conn->query($sql);
-
-$yazilar = [];
-if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        $yazilar[] = $row;
-    }
+try {
+    $stmt = $pdo->prepare("SELECT id, baslik, kategori, tarih, resim, ozet FROM blog_yazilari ORDER BY tarih DESC");
+    $stmt->execute();
+    echo json_encode($stmt->fetchAll());
+} catch (PDOException $e) {
+    error_log('blog_yazilari_getir hatası: ' . $e->getMessage());
+    echo json_encode([]);
 }
-
-echo json_encode($yazilar);
-
-$conn->close();
 ?>

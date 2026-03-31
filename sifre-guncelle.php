@@ -1,8 +1,16 @@
 <?php
+session_start();
 require 'db_config.php';
 header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    exit;
+}
+
+// CSRF koruması
+if (!isset($_SESSION['csrf_token']) || !isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Geçersiz CSRF token.']);
     exit;
 }
 
@@ -14,47 +22,36 @@ if (empty($token) || empty($password)) {
     exit;
 }
 
-if (strlen($password) < 6) {
-    echo json_encode(['success' => false, 'message' => 'Şifreniz en az 6 karakter olmalıdır.']);
+if (strlen($password) < 8) {
+    echo json_encode(['success' => false, 'message' => 'Şifreniz en az 8 karakter olmalıdır.']);
     exit;
 }
 
 $token_hash = hash('sha256', $token);
 
-// bind_result Düzeltmesi
-$stmt = $conn->prepare("SELECT id, reset_token_expiry FROM users WHERE reset_token = ?");
-$stmt->bind_param("s", $token_hash);
-$stmt->execute();
-$stmt->bind_result($id, $reset_token_expiry);
-$user = null;
-if ($stmt->fetch()) {
-    $user = ['id' => $id, 'reset_token_expiry' => $reset_token_expiry];
-}
-$stmt->close();
+// Kullanıcıyı token ile ara
+$stmt = $pdo->prepare("SELECT id, reset_token_expiry FROM users WHERE reset_token = :token");
+$stmt->execute([':token' => $token_hash]);
+$user = $stmt->fetch();
 
-if (!$user) {
+if ($user === false) {
     echo json_encode(['success' => false, 'message' => 'Geçersiz veya daha önce kullanılmış bir sıfırlama linki.']);
-    $conn->close();
     exit;
 }
 
 if (strtotime($user['reset_token_expiry']) < time()) {
     echo json_encode(['success' => false, 'message' => 'Şifre sıfırlama linkinin süresi dolmuş. Lütfen yeni bir talep oluşturun.']);
-    $conn->close();
     exit;
 }
 
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-$stmt_update = $conn->prepare("UPDATE users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE id = ?");
-$stmt_update->bind_param("si", $hashed_password, $user['id']);
-
-if ($stmt_update->execute()) {
+try {
+    $stmt_update = $pdo->prepare("UPDATE users SET password = :password, reset_token = NULL, reset_token_expiry = NULL WHERE id = :id");
+    $stmt_update->execute([':password' => $hashed_password, ':id' => $user['id']]);
     echo json_encode(['success' => true, 'message' => 'Şifreniz başarıyla güncellendi! Şimdi giriş yapabilirsiniz.']);
-} else {
+} catch (PDOException $e) {
+    error_log('sifre-guncelle.php: Şifre güncelleme hatası: ' . $e->getMessage());
     echo json_encode(['success' => false, 'message' => 'Şifre güncellenirken bir hata oluştu.']);
 }
-
-$stmt_update->close();
-$conn->close();
 ?>

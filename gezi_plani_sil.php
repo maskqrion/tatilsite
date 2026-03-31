@@ -10,7 +10,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 }
 
 $user_id = $_SESSION['id'];
-$plan_id = $_POST['plan_id'] ?? 0;
+$plan_id = (int)($_POST['plan_id'] ?? 0);
 
 if ($plan_id <= 0) {
     echo json_encode(['success' => false, 'message' => 'Geçersiz plan kimliği.']);
@@ -18,41 +18,26 @@ if ($plan_id <= 0) {
 }
 
 try {
-    // bind_result Düzeltmesi (store_result ile)
-    $stmt_check = $conn->prepare("SELECT id FROM gezi_planlari WHERE id = ? AND user_id = ?");
-    $stmt_check->bind_param("ii", $plan_id, $user_id);
-    $stmt_check->execute();
-    $stmt_check->store_result();
-
-    if ($stmt_check->num_rows === 0) {
-        http_response_code(403); 
+    // Yetki kontrolü
+    $stmt_check = $pdo->prepare("SELECT id FROM gezi_planlari WHERE id = ? AND user_id = ?");
+    $stmt_check->execute([$plan_id, $user_id]);
+    if (!$stmt_check->fetch()) {
+        http_response_code(403);
         echo json_encode(['success' => false, 'message' => 'Bu planı silme yetkiniz yok.']);
-        $stmt_check->close();
-        $conn->close();
         exit;
     }
-    $stmt_check->close();
 
-    $conn->begin_transaction();
+    $pdo->beginTransaction();
 
-    $stmt_delete_adimlari = $conn->prepare("DELETE FROM gezi_plani_adimlari WHERE plan_id = ?");
-    $stmt_delete_adimlari->bind_param("i", $plan_id);
-    $stmt_delete_adimlari->execute();
-    $stmt_delete_adimlari->close();
+    $pdo->prepare("DELETE FROM gezi_plani_adimlari WHERE plan_id = ?")->execute([$plan_id]);
+    $pdo->prepare("DELETE FROM gezi_planlari WHERE id = ?")->execute([$plan_id]);
 
-    $stmt_delete_plan = $conn->prepare("DELETE FROM gezi_planlari WHERE id = ?");
-    $stmt_delete_plan->bind_param("i", $plan_id);
-    $stmt_delete_plan->execute();
-    $stmt_delete_plan->close();
-
-    $conn->commit();
-
+    $pdo->commit();
     echo json_encode(['success' => true, 'message' => 'Plan başarıyla silindi.']);
 
-} catch (Exception $e) {
-    $conn->rollback();
-    echo json_encode(['success' => false, 'message' => 'Plan silinirken bir veritabanı hatası oluştu.']);
+} catch (PDOException $e) {
+    $pdo->rollBack();
+    error_log('gezi_plani_sil hatası: ' . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'Plan silinirken bir hata oluştu.']);
 }
-
-$conn->close();
 ?>
