@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'db_config.php';
-require 'sende-email.php';
+require 'send_email.php';
 header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

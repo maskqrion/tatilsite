@@ -59,9 +59,20 @@
 
             document.getElementById('token').value = token;
 
+            // CSRF token al
+            let csrfToken = '';
+            try {
+                const res = await fetch('check_session.php?get_csrf=true');
+                const data = await res.json();
+                if (data.csrf_token) csrfToken = data.csrf_token;
+            } catch (e) {
+                console.error('CSRF token alınamadı:', e);
+            }
+
             form.addEventListener('submit', async (event) => {
                 event.preventDefault();
                 const formData = new FormData(form);
+                formData.append('csrf_token', csrfToken);
                 const submitBtn = form.querySelector('button[type="submit"]');
 
                 submitBtn.textContent = 'Güncelleniyor...';
@@ -93,5 +104,6 @@
             });
         });
     </script>
+    <script src="utils.js" defer></script>
 </body>
 </html>

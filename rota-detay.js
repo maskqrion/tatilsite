@@ -463,10 +463,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 toplulukGalerisiYukle(rotaId);
             } else {
                 rotaBulunamadi();
+                return;
             }
-        } catch (error) { 
-            console.error('Sayfa başlatılırken hata:', error); 
+        } catch (error) {
+            console.error('Sayfa başlatılırken hata:', error);
             rotaBulunamadi();
+            return;
         }
         renderPlanListesi();
     };

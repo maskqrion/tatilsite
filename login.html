@@ -66,7 +66,8 @@
                 <h1 class="section-title">Giriş Yap</h1>
                 <div id="notification" class="notification"></div>
                 
-                <form class="contact-form" action="login.php" method="POST">
+                <form class="contact-form" action="login.php" method="POST" id="loginForm">
+                    <input type="hidden" name="csrf_token" id="csrfToken">
                     <div class="form-group">
                         <input type="email" id="email" name="email" required placeholder=" ">
                         <label for="email">E-posta Adresiniz</label>
@@ -75,7 +76,10 @@
                         <input type="password" id="password" name="password" required placeholder=" ">
                         <label for="password">Şifreniz</label>
                     </div>
-                    <button type="submit" class="hero-cta">Giriş Yap</button>
+                    <button type="submit" class="hero-cta" id="loginBtn">
+                        <span class="button-text">Giriş Yap</span>
+                        <span class="spinner"></span>
+                    </button>
                     <p class="auth-switch" style="text-align:center; margin-top:20px;">
                         <a href="sifremi-unuttum.html">Şifremi unuttum</a> | Hesabınız yok mu? <a href="register.html">Kayıt Olun</a>
                     </p>
@@ -85,7 +89,7 @@
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const notification = document.getElementById('notification');
             const params = new URLSearchParams(window.location.search);
 
@@ -103,7 +107,29 @@
                 notification.className = 'notification error';
                 notification.style.display = 'block';
             }
+
+            // CSRF token al
+            try {
+                const res = await fetch('check_session.php?get_csrf=true');
+                const data = await res.json();
+                if (data.csrf_token) {
+                    document.getElementById('csrfToken').value = data.csrf_token;
+                }
+            } catch (e) {
+                console.error('CSRF token alınamadı:', e);
+            }
+
+            // Loading state
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', () => {
+                    const btn = document.getElementById('loginBtn');
+                    btn.classList.add('loading');
+                    btn.disabled = true;
+                });
+            }
         });
     </script>
+    <script src="utils.js" defer></script>
 </body>
 </html>

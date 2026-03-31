@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C C:/xampp/htdocs/tatilsite show HEAD:animations.css)",
+      "Bash(git -C C:/xampp/htdocs/tatilsite add animations.css)",
+      "Bash(git -C:*)"
+    ]
+  }
+}

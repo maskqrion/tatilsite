@@ -44,10 +44,23 @@
     </main>
 
     <script>
+        // Sayfa yüklendiğinde CSRF token al
+        let csrfToken = '';
+        (async () => {
+            try {
+                const res = await fetch('check_session.php?get_csrf=true');
+                const data = await res.json();
+                if (data.csrf_token) csrfToken = data.csrf_token;
+            } catch (e) {
+                console.error('CSRF token alınamadı:', e);
+            }
+        })();
+
         document.getElementById('sifreTalepForm').addEventListener('submit', async (event) => {
             event.preventDefault();
             const form = event.target;
             const formData = new FormData(form);
+            formData.append('csrf_token', csrfToken);
             const notification = document.getElementById('notification');
             const submitBtn = form.querySelector('button[type="submit"]');
 
@@ -78,5 +91,6 @@
             }
         });
     </script>
+    <script src="utils.js" defer></script>
 </body>
 </html>

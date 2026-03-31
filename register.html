@@ -38,7 +38,8 @@
                 <h1 class="section-title">Hesap Oluştur</h1>
                 <div id="notification" class="notification"></div>
 
-                <form class="contact-form" action="register.php" method="POST">
+                <form class="contact-form" action="register.php" method="POST" id="registerForm">
+                    <input type="hidden" name="csrf_token" id="csrfToken">
                     <div class="form-group">
                         <input type="text" id="name" name="name" required placeholder=" ">
                         <label for="name">Adınız Soyadınız</label>
@@ -48,10 +49,13 @@
                         <label for="email">E-posta Adresiniz</label>
                     </div>
                     <div class="form-group">
-                        <input type="password" id="password" name="password" required minlength="6" placeholder=" ">
-                        <label for="password">Şifreniz (en az 6 karakter)</label>
+                        <input type="password" id="password" name="password" required minlength="8" placeholder=" ">
+                        <label for="password">Şifreniz (en az 8 karakter)</label>
                     </div>
-                    <button type="submit" class="hero-cta">Kayıt Ol</button>
+                    <button type="submit" class="hero-cta" id="registerBtn">
+                        <span class="button-text">Kayıt Ol</span>
+                        <span class="spinner"></span>
+                    </button>
                     <p class="auth-switch" style="text-align:center; margin-top:20px;">Zaten bir hesabınız var mı? <a href="login.html">Giriş Yapın</a></p>
                 </form>
             </section>
@@ -59,7 +63,7 @@
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const notification = document.getElementById('notification');
             const params = new URLSearchParams(window.location.search);
 
@@ -76,7 +80,29 @@
                 notification.className = 'notification error';
                 notification.style.display = 'block';
             }
+
+            // CSRF token al
+            try {
+                const res = await fetch('check_session.php?get_csrf=true');
+                const data = await res.json();
+                if (data.csrf_token) {
+                    document.getElementById('csrfToken').value = data.csrf_token;
+                }
+            } catch (e) {
+                console.error('CSRF token alınamadı:', e);
+            }
+
+            // Loading state
+            const registerForm = document.getElementById('registerForm');
+            if (registerForm) {
+                registerForm.addEventListener('submit', () => {
+                    const btn = document.getElementById('registerBtn');
+                    btn.classList.add('loading');
+                    btn.disabled = true;
+                });
+            }
         });
     </script>
+    <script src="utils.js" defer></script>
 </body>
 </html>

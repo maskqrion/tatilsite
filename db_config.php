@@ -49,7 +49,7 @@ function getDB(): PDO {
 
     $host = $_ENV['DB_HOST']     ?? 'localhost';
     $db   = $_ENV['DB_DATABASE'] ?? 'tatilsite';
-    $user = $_ENV['DB_USERNAME'] ?? 'root';
+    $user = $_ENV['DB_USER'] ?? 'root';
     $pass = $_ENV['DB_PASSWORD'] ?? '';
 
     $dsn = "mysql:host={$host};dbname={$db};charset=utf8mb4";
